@@ -1,5 +1,20 @@
 const mod = (x, n) => (x % n + n) % n
 
+function compare2DArrays(a,b){
+  if (a.length != b.length ||
+      a[0].length != b[0].length ){
+          return false;
+      }
+  for (let h = 0; h < a.length; h += 1) {
+      for (let w = 0; w < a[0].length; w += 1) {
+         if ( a[h][w] != b[h][w]){
+             return false;
+         }
+      }
+  }
+  return true;   
+}
+
 class Block {
   constructor(shapes) {    
     this.shapes = shapes;
@@ -54,7 +69,6 @@ class BlockT extends Block {
 class BlockI extends Block {
     constructor(){
       const shapes = [[['I'],
-                       ['I'],
                        ['I'],
                        ['I'],
                        ['I']],
@@ -117,4 +131,4 @@ class BlockJ extends Block {
   }
 }
 
-module.exports = { BlockO, BlockT, BlockI, BlockS, BlockZ, BlockL, BlockJ }
+module.exports = { compare2DArrays, BlockO, BlockT, BlockI, BlockS, BlockZ, BlockL, BlockJ }
