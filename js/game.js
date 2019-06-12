@@ -3,39 +3,120 @@ const { getRandomBlock } = require('./game-blocks');
 
 class Game {
   constructor() {
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = 200;
-    this.canvas.height = 400;
-    this.canvas.style.border = '2px solid #BCBCBE';
-    this.ctx = this.canvas.getContext('2d');
+    this.canvasGrid = document.createElement('canvas');
+    this.canvasGridCtx = this.canvasGrid.getContext('2d');
+    this.initCanvasGrid();
+
+    this.canvasPanel = document.createElement('canvas');
+    this.canvasPanelCtx = this.canvasPanel.getContext('2d');
+    this.initCanvasPanel();
+
     this.grid = {};
+    this.previewBlock = getRandomBlock();
     this.downInterval = 0;
+    this.gameOver = false;
+    this.score = 0;
   }
 
-  getCanvas() {
-    return this.canvas;
+  initCanvasGrid() {
+    this.canvasGrid.width = 200;
+    this.canvasGrid.height = 400;
+    this.canvasGrid.style.border = '2px solid #BCBCBE';
+    this.canvasGrid.style.backgroundColor = '#FFFFFF';
   }
 
-  redrawGrid() {
+  initCanvasPanel() {
+    this.canvasPanel.width = 100;
+    this.canvasPanel.height = 400;
+    this.canvasPanel.style.border = '2px solid #BCBCBE';
+    this.canvasPanel.style.backgroundColor = '#FFFFFF';
+    this.canvasPanelCtx.fillStyle = '#BCBCBE';
+    this.canvasPanelCtx.fillRect(0, 133, 100, 2);
+    this.canvasPanelCtx.fillRect(0, 266, 100, 2);
+    this.canvasPanelCtx.fillStyle = '#000000';
+    this.canvasPanelCtx.font = '14px Arial';
+    // Preview
+    this.canvasPanelCtx.fillText('Preview', 25, 20);
+    // Score
+    this.canvasPanelCtx.fillText('Score', 30, 153);
+    // Keys
+    this.canvasPanelCtx.fillText('Keys', 30, 286);
+    this.canvasPanelCtx.fillText(`${String.fromCharCode(8678)} `
+    + `${String.fromCharCode(8680)} `
+    + 'left / right', 2, 320);
+    this.canvasPanelCtx.fillText(`${String.fromCharCode(8679)} `
+    + `${String.fromCharCode(8681)} `
+    + 'rotate', 13, 340);
+    this.canvasPanelCtx.fillText('"space" down', 7, 360);
+    this.canvasPanelCtx.fillText('"s" new game', 7, 380);
+  }
+
+  getCanvasGrid() {
+    return this.canvasGrid;
+  }
+
+  getCanvasPanel() {
+    return this.canvasPanel;
+  }
+
+  drawGameOver() {
+    const blocks = ['O', 'T', 'I', 'S', 'Z', 'L', 'J'];
+    let c = 0;
     for (let y = 0; y < this.grid.getHeight(); y += 1) {
       for (let x = 0; x < this.grid.getWidth(); x += 1) {
+        this.grid.getGrid()[y][x] = blocks[c % 7];
+        c += 1;
+      }
+    }
+    this.redrawCanvasGrid();
+  }
+
+  redrawPreview() {
+    this.canvasPanelCtx.fillStyle = '#FFFFFF';
+    this.canvasPanelCtx.fillRect(25, 40, 80, 80);
+    this.redrawCanvas(this.canvasPanelCtx, this.previewBlock.getShape(),
+      this.previewBlock.getHeight(), this.previewBlock.getWidth(), 25, 40);
+  }
+
+  redrawScore() {
+    this.canvasPanelCtx.fillStyle = '#FFFFFF';
+    this.canvasPanelCtx.fillRect(5, 170, 90, 70);
+    this.canvasPanelCtx.fillStyle = '#000000';
+    this.canvasPanelCtx.font = '30px Arial';
+    this.canvasPanelCtx.fillText(this.score, (this.score > 99) ? 20 : 30, 210);
+  }
+
+  redrawCanvasGrid() {
+    this.redrawCanvas(this.canvasGridCtx, this.grid.getGrid(),
+      this.grid.getHeight(), this.grid.getWidth(), 0, 0);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  redrawCanvas(ctx, grid, height, width, offsetX, offsetY) {
+    if (this.gameOver) {
+      return;
+    }
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
         // eslint-disable-next-line default-case
-        switch (this.grid.getGrid()[y][x]) {
-          case 'X': this.ctx.fillStyle = '#FFFFFF'; break;
-          case 'O': this.ctx.fillStyle = '#FFD662'; break;
-          case 'T': this.ctx.fillStyle = '#6B5B95'; break;
-          case 'I': this.ctx.fillStyle = '#006E6D'; break;
-          case 'S': this.ctx.fillStyle = '#92B558'; break;
-          case 'Z': this.ctx.fillStyle = '#9E1030'; break;
-          case 'L': this.ctx.fillStyle = '#2A4B7C'; break;
-          case 'J': this.ctx.fillStyle = '#F96714'; break;
+        switch (grid[y][x]) {
+          case 'X': ctx.fillStyle = '#FFFFFF'; break;
+          case 'O': ctx.fillStyle = '#FFD662'; break;
+          case 'T': ctx.fillStyle = '#6B5B95'; break;
+          case 'I': ctx.fillStyle = '#006E6D'; break;
+          case 'S': ctx.fillStyle = '#92B558'; break;
+          case 'Z': ctx.fillStyle = '#9E1030'; break;
+          case 'L': ctx.fillStyle = '#2A4B7C'; break;
+          case 'J': ctx.fillStyle = '#F96714'; break;
         }
-        this.ctx.fillRect(x * 20, y * 20, 20, 20);
+        ctx.fillRect(offsetX + x * 20, offsetY + y * 20, 20, 20);
       }
     }
   }
 
   startNewGame() {
+    this.gameOver = false;
+    this.score = 0;
     if (this.downInterval !== 0) {
       clearInterval(this.downInterval);
     }
@@ -45,42 +126,52 @@ class Game {
   }
 
   insertBlock() {
-    const newBlock = getRandomBlock();
+    if (this.gameOver) {
+      return;
+    }
+    const newBlock = this.previewBlock;
+    this.previewBlock = getRandomBlock();
     if (this.grid.insertNewFloatBlock(newBlock)) {
-      this.redrawGrid();
+      this.redrawCanvasGrid();
+      this.redrawPreview();
+      this.redrawScore();
     } else {
       // game over
       clearInterval(this.downInterval);
+      this.drawGameOver();
+      this.gameOver = true;
     }
   }
 
   left() {
     this.grid.moveFloatBlock(directions.LEFT);
-    this.redrawGrid();
+    this.redrawCanvasGrid();
   }
 
   right() {
     this.grid.moveFloatBlock(directions.RIGHT);
-    this.redrawGrid();
+    this.redrawCanvasGrid();
   }
 
   down() {
     if (!this.grid.moveFloatBlock(directions.DOWN)) {
-      this.grid.clearFullRows();
+      this.score += 1;
+      const numCleared = this.grid.clearFullRows();
+      this.score += numCleared * 10;
       this.insertBlock();
     } else {
-      this.redrawGrid();
+      this.redrawCanvasGrid();
     }
   }
 
   rotateLeft() {
     this.grid.rotateFloatBlock(directions.LEFT);
-    this.redrawGrid();
+    this.redrawCanvasGrid();
   }
 
   rotateRight() {
     this.grid.rotateFloatBlock(directions.RIGHT);
-    this.redrawGrid();
+    this.redrawCanvasGrid();
   }
 }
 
@@ -89,7 +180,8 @@ const g = new Game();
 const readyDOM = setInterval(() => {
   if (document.readyState === 'complete') {
     clearInterval(readyDOM);
-    document.body.insertBefore(g.getCanvas(), document.body.childNodes[0]);
+    document.body.insertBefore(g.getCanvasGrid(), document.body.childNodes[0]);
+    document.body.insertBefore(g.getCanvasPanel(), document.body.childNodes[1]);
   }
 }, 10);
 
@@ -106,3 +198,5 @@ function keyDown(event) {
   }
 }
 document.onkeydown = keyDown;
+
+g.startNewGame();

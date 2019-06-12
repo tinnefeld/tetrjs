@@ -99,6 +99,7 @@ class Grid {
   }
 
   clearFullRows() {
+    let numClearedRows = 0;
     // check for each row if it's full
     let h = this.getHeight() - 1;
     while (h > 0) {
@@ -119,8 +120,10 @@ class Grid {
           newRow.push('X');
         }
         this.getGrid().unshift(newRow);
+        numClearedRows += 1;
       }
     }
+    return numClearedRows;
   }
 
   insertNewFloatBlock(block) {

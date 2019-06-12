@@ -5,15 +5,12 @@
   "repository": "github:tinnefeld/tetrjs",
   "scripts": {
     "build": "cp ./html/game.html ./dist && browserify ./js/game.js -o ./dist/tetrjs.js",
-    "lint": "eslint --fix **/*.js",
+    "lint": "eslint --fix ./js/*.js",
     "test": "jest"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "acorn": "^6.1.1",
-    "acron": "^1.0.5",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.17.3",
