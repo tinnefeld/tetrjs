@@ -3,12 +3,12 @@ const { compare2DArrays, BlockO, BlockT, BlockI, BlockS, BlockZ, BlockL, BlockJ 
 
 test('insertBlock', () => {
     const myGrid = new Grid(10,20);
-    const testBlockT = new BlockT;
-    const testBlockJ = new BlockJ;
-    const testBlockL = new BlockL;
+    const testBlockT = new BlockT();
+    const testBlockJ = new BlockJ();
+    const testBlockL = new BlockL();
     testBlockJ.rotateRight();
-    const testBlockO = new BlockO;
-    const testBlockI = new BlockI;
+    const testBlockO = new BlockO();
+    const testBlockI = new BlockI();
     testBlockI.rotateLeft();
     myGrid.insertBlock(testBlockT,0,0);
     myGrid.insertBlock(testBlockL,8,16);
@@ -115,5 +115,28 @@ test('rotateFloatBlock', () =>{
                         [ 'X', 'X', 'X', 'T' ],
                         [ 'X', 'X', 'X', 'X' ] ];
     expect(compare2DArrays(myGrid.getGrid(),testGrid2)).toBe(true);
-    console.log(myGrid.getGrid());
+})
+
+test('clearFullRows', () =>{
+    const myGrid = new Grid(4,4);
+    myGrid.grid = [ [ 'I', 'I', 'I', 'I' ],
+                    [ 'X', 'X', 'X', 'I' ],
+                    [ 'O', 'O', 'O', 'O' ],
+                    [ 'O', 'X', 'O', 'O' ] ];
+    const testGrid1 =  [ [ 'X', 'X', 'X', 'X' ],
+                         [ 'X', 'X', 'X', 'X' ],
+                         [ 'X', 'X', 'X', 'I' ],
+                         [ 'O', 'X', 'O', 'O' ] ];
+    myGrid.clearFullRows();
+    expect(compare2DArrays(myGrid.getGrid(),testGrid1)).toBe(true);
+    myGrid.grid = [ [ 'X', 'X', 'X', 'I' ],
+                    [ 'O', 'O', 'O', 'O' ],
+                    [ 'O', 'O', 'O', 'O' ],
+                    [ 'X', 'X', 'I', 'X' ] ];
+    myGrid.clearFullRows();
+    const testGrid2 =  [ [ 'X', 'X', 'X', 'X' ],
+                         [ 'X', 'X', 'X', 'X' ],
+                         [ 'X', 'X', 'X', 'I' ],
+                         [ 'X', 'X', 'I', 'X' ] ];
+    expect(compare2DArrays(myGrid.getGrid(),testGrid2)).toBe(true);
 })

@@ -98,6 +98,31 @@ class Grid {
     return false;
   }
 
+  clearFullRows(){
+    //check for each row if it's full
+    let h = this.getHeight() - 1;
+    while (h > 0) {
+      let rowIsFull = true;
+      for (let w = 0; w < this.getWidth(); w+= 1) {
+        if (this.getGrid()[h][w] == 'X') {
+          rowIsFull = false;
+          break;
+        }        
+      }
+      if (!rowIsFull) {
+        h--;
+        continue;
+      }
+      //row is full, remove from grid, add empty row at the top
+      this.getGrid().splice(h,1); 
+      const newRow = [];
+      for (let n = 0; n < this.getWidth(); n += 1) {
+        newRow.push('X');
+      }
+      this.getGrid().unshift(newRow);
+    }
+  }
+
   insertNewFloatBlock(block){
     if (this.checkCollision(block,Math.round(this.width/2-1),0)){
       return false;

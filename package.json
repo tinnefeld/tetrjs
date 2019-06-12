@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "cp ./html/game.html ./dist && browserify ./js/game.js -o ./dist/tetrjs.js",
     "test": "jest"
   },
   "keywords": [],

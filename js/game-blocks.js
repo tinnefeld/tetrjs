@@ -1,20 +1,5 @@
 const mod = (x, n) => (x % n + n) % n
 
-function compare2DArrays(a,b){
-  if (a.length != b.length ||
-      a[0].length != b[0].length ){
-          return false;
-      }
-  for (let h = 0; h < a.length; h += 1) {
-      for (let w = 0; w < a[0].length; w += 1) {
-         if ( a[h][w] != b[h][w]){
-             return false;
-         }
-      }
-  }
-  return true;   
-}
-
 class Block {
   constructor(shapes) {    
     this.shapes = shapes;
@@ -131,4 +116,32 @@ class BlockJ extends Block {
   }
 }
 
-module.exports = { compare2DArrays, BlockO, BlockT, BlockI, BlockS, BlockZ, BlockL, BlockJ }
+function compare2DArrays(a,b){
+  if (a.length != b.length ||
+      a[0].length != b[0].length ){
+          return false;
+      }
+  for (let h = 0; h < a.length; h += 1) {
+      for (let w = 0; w < a[0].length; w += 1) {
+         if ( a[h][w] != b[h][w]){
+             return false;
+         }
+      }
+  }
+  return true;   
+}
+
+function getRandomBlock(){
+  let x = Math.floor(Math.random() * 7);
+  switch (x){
+    case 0: return new BlockO();
+    case 1: return new BlockT();
+    case 2: return new BlockI();
+    case 3: return new BlockS();
+    case 4: return new BlockZ();
+    case 5: return new BlockL();
+    case 6: return new BlockJ();
+  }
+}
+
+module.exports = { compare2DArrays, BlockO, BlockT, BlockI, BlockS, BlockZ, BlockL, BlockJ, getRandomBlock }
