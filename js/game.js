@@ -4,10 +4,12 @@ const { getRandomBlock } = require('./game-blocks');
 class Game {
   constructor() {
     this.canvasGrid = document.createElement('canvas');
+    this.canvasGrid.setAttribute('class', 'canvasgrid');
     this.canvasGridCtx = this.canvasGrid.getContext('2d');
     this.initCanvasGrid();
 
     this.canvasPanel = document.createElement('canvas');
+    this.canvasPanel.setAttribute('class', 'canvaspanel');
     this.canvasPanelCtx = this.canvasPanel.getContext('2d');
     this.initCanvasPanel();
 
@@ -21,15 +23,11 @@ class Game {
   initCanvasGrid() {
     this.canvasGrid.width = 200;
     this.canvasGrid.height = 400;
-    this.canvasGrid.style.border = '2px solid #BCBCBE';
-    this.canvasGrid.style.backgroundColor = '#FFFFFF';
   }
 
   initCanvasPanel() {
     this.canvasPanel.width = 100;
     this.canvasPanel.height = 400;
-    this.canvasPanel.style.border = '2px solid #BCBCBE';
-    this.canvasPanel.style.backgroundColor = '#FFFFFF';
     this.canvasPanelCtx.fillStyle = '#BCBCBE';
     this.canvasPanelCtx.fillRect(0, 133, 100, 2);
     this.canvasPanelCtx.fillRect(0, 266, 100, 2);

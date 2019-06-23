@@ -4,7 +4,7 @@
   "description": " Tile-matching puzzle game clone in Javascript",
   "repository": "github:tinnefeld/tetrjs",
   "scripts": {
-    "build": "cp ./html/game.html ./dist && browserify ./js/game.js -o ./dist/tetrjs.js",
+    "build": "cp ./html/game.* ./dist && browserify ./js/game.js -o ./dist/tetrjs.js",
     "lint": "eslint --fix ./js/*.js",
     "test": "jest"
   },
