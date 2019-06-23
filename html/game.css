@@ -1,4 +1,58 @@
 canvas {
-    background-color: #FFFFFF;
-    border: 2px solid #BCBCBE;
+  background-color: #fff;
+  border: 2px solid #bcbcbe;
+}
+
+.column {
+  float: left;
+  height: 400px;
+  background-color: #aaa;
+}
+
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+[class^="block"] {
+  float: left;
+  height: 20px;
+  width: 20px;
+}
+
+.blockx {
+  background-color: #fff;
+}
+
+.blocko {
+  background-color: #ffd662;
+}
+
+.blockt {
+  background-color: #6b5b95;
+}
+
+.blocki {
+  background-color: #006e6d;
+}
+
+.blocks {
+  background-color: #92b558;
+}
+
+.blockz {
+  background-color: #9e1030;
+}
+
+.blockl {
+  background-color: #2a4b7c;
+}
+
+.blockj {
+  background-color: #f96714;
+}
+
+.newRow {
+  clear: both;
 }
